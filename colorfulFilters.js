@@ -23,7 +23,7 @@ function removeEmptyFilterDiv(filterWrapper) {
 function colorFilters(checkboxes) {
     checkboxes.each(function() {
         const color = colors[this.name];
-        if (color) $(checkboxes.nextSibling).css("cssText", "background-color: " + color + "!important");
+        if (color) $(this.nextSibling).css("cssText", "background-color: " + color + "!important");
     });
 }
 
@@ -58,7 +58,7 @@ function waitForElm(selector, parent = document) {
 }
 
 $(function() {
-    waitForElm(".t951__sidebar-wrapper").then((elm) => {
+    waitForElm(".t-store__filter__options").then((elm) => {
         if(!removeEmptyFilterDiv(elm)) {
             let checkboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
             colorFilters(checkboxes);

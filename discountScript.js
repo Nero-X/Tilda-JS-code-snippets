@@ -104,34 +104,24 @@ function t_store__prod__quantity_plus_minus_10(prodElem) {
     };
 }
 
-function waitForElm(selector, parent = document) {
+function waitForElms(selector, parent = document) {
     return new Promise(resolve => {
         if (parent.querySelector(selector)) {
-            return resolve(parent.querySelector(selector));
+            return resolve(parent.querySelectorAll(selector));
         }
 
         const observer = new MutationObserver(mutations => {
             if (parent.querySelector(selector)) {
-                resolve(parent.querySelector(selector));
+                resolve(parent.querySelectorAll(selector));
                 observer.disconnect();
             }
         });
 
-        observer.observe(parent ?? document.body, {
+        observer.observe(parent, {
             childList: true,
             subtree: true
         });
     });
-}
-
-function removeColorSelect() {
-    $("div.t-product__option[data-edition-option-id=Цвет]").remove();
-}
-
-function removeLinksToOrder() {
-    $("a[href=#order]:not([class])").each(function() {
-        this.before(this.children());
-    }).remove();
 }
 
 function updateCartTotalQuantityAndIconCounter() {
@@ -141,14 +131,14 @@ function updateCartTotalQuantityAndIconCounter() {
 $(function() {
     insertDiscountText();
     changeStyles();
-    $(".js-product.t-store__card").each(function() {
-        t_store__prod__quantity_plus_minus_10(this);
+    waitForElms("div.t-product__option[data-edition-option-id=Цвет]").then((elms) => {
+        $(elms).remove();
     });
-    waitForElm(".t-popup .t-store__prod__quantity").then((elm) => {
-        t_store__prod__quantity_plus_minus_10(elm.parentNode);
+    waitForElms("a[href='#order']:not([class])").then((elms) => {
+        $(elms).each(function() {
+            this.before(this.children());
+        }).remove();
     });
-    removeColorSelect();
-    removeLinksToOrder();
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
             // редактирование кол-ва
