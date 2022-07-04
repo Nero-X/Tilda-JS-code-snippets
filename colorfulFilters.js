@@ -50,7 +50,7 @@ function waitForElm(selector, parent = document) {
             }
         });
 
-        observer.observe(parent ?? document.body, {
+        observer.observe(parent, {
             childList: true,
             subtree: true
         });

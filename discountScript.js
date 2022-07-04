@@ -71,16 +71,6 @@ function setDiscountAndSum() {
     });
 }
 
-function setQuantityMultipleOf10(quantityInput) {
-    quantityInput.onchange = () => {
-        quantityInput.value = productQuantityRound(quantityInput.value);
-    }
-}
-
-function productQuantityRound(n) {
-    return n % 5 == 0 ? n : Math.round(n / 10) * 10;
-}
-
 function t_store__prod__quantity_plus_minus_10(prodElem) {
     var e = $(prodElem).find(".t-store__prod__quantity");
     if (e) {
@@ -90,16 +80,16 @@ function t_store__prod__quantity_plus_minus_10(prodElem) {
         let button = $(prodElem).find(".js-store-prod-btn")[0];
         input.value = 10;
         minus.addEventListener("click", function() {
-            input.value = Math.max(10, productQuantityRound(Number(input.value) - 9));
+            input.value = Math.max(10, input.value - 9);
         });
         plus.addEventListener("click", function() {
-            input.value = Math.max(10, productQuantityRound(Number(input.value) + 9));
+            input.value = Math.max(10, input.value + 9);
         });
         input.addEventListener("change", function() {
-            input.value = Math.max(10, productQuantityRound(Number(input.value)));
+            input.value = Math.max(10, input.value);
         });
         button?.addEventListener("click", function() {
-            input.value = Math.max(10, productQuantityRound(Number(input.value)));
+            input.value = Math.max(10, input.value);
         });
     };
 }
@@ -124,26 +114,37 @@ function waitForElms(selector, parent = document) {
     });
 }
 
-function updateCartTotalQuantityAndIconCounter() {
+function removeColorSelect() {
+    waitForElms("div.t-product__option[data-edition-option-id=Цвет]").then((elms) => {
+        $(elms).remove();
+    });
+}
 
+function removeLinksToOrder() {
+    waitForElms("a[href='#order']:not([class])").then((elms) => {
+        $(elms).each(function() {
+            $(this).before(this.children);
+        }).remove();
+    });
+}
+
+function updateCartTotalQuantityAndIconCounter() {
+    tcart.total = calcTotalQuantity();
+    tcart__reDrawCartIcon();
 }
 
 $(function() {
     insertDiscountText();
     changeStyles();
-    waitForElms("div.t-product__option[data-edition-option-id=Цвет]").then((elms) => {
-        $(elms).remove();
+    waitForElm(".t-popup .t-store__prod__quantity").then((elm) => {
+        t_store__prod__quantity_plus_minus_10(elm.parentNode);
     });
-    waitForElms("a[href='#order']:not([class])").then((elms) => {
-        $(elms).each(function() {
-            this.before(this.children());
-        }).remove();
-    });
+    removeColorSelect();
+    removeLinksToOrder();
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
             // редактирование кол-ва
             if (change.addedNodes.length > 0 && change.addedNodes[0].classList?.contains("t706__product-quantity-inp")) {
-                setQuantityMultipleOf10(change.addedNodes[0]);
                 updateCartTotalQuantityAndIconCounter();
             }
             // изменение списка
@@ -165,9 +166,11 @@ $(function() {
             // добавление товаров в каталог
             if (change.target.classList.contains("t951__grid-cont")) {
                 for (const elem of change.addedNodes) {
-                    t_store__prod__quantity_plus_minus_10(elem);
+                    if (elem.classList.contains("js-product")) t_store__prod__quantity_plus_minus_10(elem);
                 };
-            }
+                removeColorSelect();
+                removeLinksToOrder();
+            };
         };
     });
     storeObserver.observe($(".t951")[0], {
@@ -180,8 +183,7 @@ $(function() {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
         !window.tcart.products[r] && (tcart__syncProductsObject__LStoObj(),
-        null == window.tcart.products[r]) || (0 < window.tcart.products[r].quantity && (window.tcart.products[r].quantity -= 10,
-        window.tcart.products[r].quantity = productQuantityRound(window.tcart.products[r].quantity)),
+        null == window.tcart.products[r]) || (0 < window.tcart.products[r].quantity && (window.tcart.products[r].quantity -= 10),
         window.tcart.products[r].amount = tcart__roundPrice(window.tcart.products[r].price * window.tcart.products[r].quantity),
         0 < window.tcart.products[r].amount && (e.querySelector(".t706__product-amount").innerHTML = tcart__showPrice(window.tcart.products[r].amount)),
         0 < window.tcart.products[r].amount && "y" === window.tcart.products[r].single && void 0 !== window.tcart.products[r].portion && (e.querySelector(".t706__product-portion").innerHTML = tcart__showWeight(window.tcart.products[r].quantity * window.tcart.products[r].portion, window.tcart.products[r].unit)),
@@ -199,7 +201,6 @@ $(function() {
           , r = e.getAttribute("data-cart-product-i");
         (window.tcart.products[r] || (tcart__syncProductsObject__LStoObj(),
         null != window.tcart.products[r])) && (window.tcart.products[r].quantity > 0 && void 0 !== window.tcart.products[r].inv && window.tcart.products[r].inv > 0 && window.tcart.products[r].inv == window.tcart.products[r].quantity ? alert(tcart_dict("limitReached")) : (window.tcart.products[r].quantity += 10,
-        window.tcart.products[r].quantity = productQuantityRound(window.tcart.products[r].quantity),
         window.tcart.products[r].amount = window.tcart.products[r].price * window.tcart.products[r].quantity,
         window.tcart.products[r].amount = tcart__roundPrice(window.tcart.products[r].amount),
         e.querySelector(".t706__product-quantity").innerHTML = window.tcart.products[r].quantity,
