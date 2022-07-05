@@ -68,6 +68,7 @@ function setDiscountAndSum() {
     $("#total-sum").text(totalSum.toCurrencyString());
     $("button.t-submit").click(function() {
         tcart.amount = totalSum;
+        tcart.total = calcTotalQuantity();
     });
 }
 
@@ -90,7 +91,6 @@ function t_store__prod__quantity_plus_minus_10(prodElem) {
         });
         button?.addEventListener("click", function() {
             input.value = Math.max(10, input.value);
-            updateCartTotalQuantityAndIconCounter();
         });
     };
 }

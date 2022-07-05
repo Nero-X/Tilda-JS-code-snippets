@@ -37,8 +37,8 @@ function sortFilters() {
     });
 }
 
-function waitForElm(selector, parent = document) {
-    return new Promise(resolve => {
+function waitForElm(selector, timeout = null, parent = document) {
+    return new Promise((resolve, reject) => {
         if (parent.querySelector(selector)) {
             return resolve(parent.querySelector(selector));
         }
@@ -54,14 +54,21 @@ function waitForElm(selector, parent = document) {
             childList: true,
             subtree: true
         });
+
+        if(timeout) setTimeout(function() {
+            reject(new Error("Timeout"));
+            observer.disconnect();
+        }, timeout);
     });
 }
 
-window.addEventListener("load", function() {
-    if(!removeEmptyFilterDiv()) {
-        let checkboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
-        colorFilters(checkboxes);
-        sortFilters();
-        checkboxes.on("change", sortFilters);
-    };
-});
+$(function() {
+    waitForElm(".t-store__filter__options", 2000).then((elm) => {
+        if(!removeEmptyFilterDiv(elm)) {
+            let checkboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
+            colorFilters(checkboxes);
+            sortFilters();
+            checkboxes.on("change", sortFilters);
+        };
+    });
+})
