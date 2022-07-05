@@ -34,9 +34,9 @@ function calcTotalQuantity() {
 function calcDiscount() {
     let totalQuantity = calcTotalQuantity();
     let discount =
-        totalQuantity >= 20 && totalQuantity <= 50 ? 10 :
-        totalQuantity >= 60 && totalQuantity <= 100 ? 12 :
-        totalQuantity >= 110 && totalQuantity <= 300 ? 15 :
+        totalQuantity >= 20 && totalQuantity < 60 ? 10 :
+        totalQuantity >= 60 && totalQuantity < 110 ? 12 :
+        totalQuantity >= 110 && totalQuantity < 310 ? 15 :
         totalQuantity >= 310 ? 20 : 0;
     return discount;
 }
@@ -80,16 +80,17 @@ function t_store__prod__quantity_plus_minus_10(prodElem) {
         let button = $(prodElem).find(".js-store-prod-btn")[0];
         input.value = 10;
         minus.addEventListener("click", function() {
-            input.value = Math.max(10, input.value - 9);
+            input.value = Math.max(10, Number(input.value) - 9);
         });
         plus.addEventListener("click", function() {
-            input.value = Math.max(10, input.value + 9);
+            input.value = Math.max(10, Number(input.value) + 9);
         });
         input.addEventListener("change", function() {
             input.value = Math.max(10, input.value);
         });
         button?.addEventListener("click", function() {
             input.value = Math.max(10, input.value);
+            updateCartTotalQuantityAndIconCounter();
         });
     };
 }
@@ -128,11 +129,6 @@ function removeLinksToOrder() {
     });
 }
 
-function updateCartTotalQuantityAndIconCounter() {
-    tcart.total = calcTotalQuantity();
-    tcart__reDrawCartIcon();
-}
-
 $(function() {
     insertDiscountText();
     changeStyles();
@@ -143,20 +139,15 @@ $(function() {
     removeLinksToOrder();
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
-            // редактирование кол-ва
-            if (change.addedNodes.length > 0 && change.addedNodes[0].classList?.contains("t706__product-quantity-inp")) {
-                updateCartTotalQuantityAndIconCounter();
-            }
             // изменение списка
-            else if (change.target.classList.contains("t706__product-quantity") ||
+            if (change.target.classList.contains("t706__product-quantity") ||
                 change.target.classList.contains("t706__cartwin-products")) {
                 setDiscountAndSum();
-                updateCartTotalQuantityAndIconCounter();
                 break;
             };
         };
     });
-    cartObserver.observe($(".t706__cartwin-products")[0], {
+    cartObserver.observe($(".t706")[0], {
         childList: true,
         characterData: true,
         subtree: true
@@ -183,7 +174,7 @@ $(function() {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
         !window.tcart.products[r] && (tcart__syncProductsObject__LStoObj(),
-        null == window.tcart.products[r]) || (0 < window.tcart.products[r].quantity && (window.tcart.products[r].quantity -= 10),
+        null == window.tcart.products[r]) || (0 < window.tcart.products[r].quantity && (window.tcart.products[r].quantity -= 10), // -10
         window.tcart.products[r].amount = tcart__roundPrice(window.tcart.products[r].price * window.tcart.products[r].quantity),
         0 < window.tcart.products[r].amount && (e.querySelector(".t706__product-amount").innerHTML = tcart__showPrice(window.tcart.products[r].amount)),
         0 < window.tcart.products[r].amount && "y" === window.tcart.products[r].single && void 0 !== window.tcart.products[r].portion && (e.querySelector(".t706__product-portion").innerHTML = tcart__showWeight(window.tcart.products[r].quantity * window.tcart.products[r].portion, window.tcart.products[r].unit)),
@@ -200,7 +191,7 @@ $(function() {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
         (window.tcart.products[r] || (tcart__syncProductsObject__LStoObj(),
-        null != window.tcart.products[r])) && (window.tcart.products[r].quantity > 0 && void 0 !== window.tcart.products[r].inv && window.tcart.products[r].inv > 0 && window.tcart.products[r].inv == window.tcart.products[r].quantity ? alert(tcart_dict("limitReached")) : (window.tcart.products[r].quantity += 10,
+        null != window.tcart.products[r])) && (window.tcart.products[r].quantity > 0 && void 0 !== window.tcart.products[r].inv && window.tcart.products[r].inv > 0 && window.tcart.products[r].inv == window.tcart.products[r].quantity ? alert(tcart_dict("limitReached")) : (window.tcart.products[r].quantity += 10, // +10
         window.tcart.products[r].amount = window.tcart.products[r].price * window.tcart.products[r].quantity,
         window.tcart.products[r].amount = tcart__roundPrice(window.tcart.products[r].amount),
         e.querySelector(".t706__product-quantity").innerHTML = window.tcart.products[r].quantity,
@@ -211,4 +202,37 @@ $(function() {
         tcart__reDrawTotal(),
         tcart__saveLocalObj()))
     };
+
+    // отображение общего кол-ва товаров на счётчике корзины
+    tcart__reDrawCartIcon = function() {
+        var t = window.tcart
+          , e = document.querySelector(".t706__carticon")
+          , r = document.querySelector('[data-menu-widgeticon-cart="yes"]');
+        t.total = calcTotalQuantity(); // modified
+        if (r)
+            var o = r.querySelector(".js-carticon-counter");
+        if (e) {
+            var a = e.querySelector(".js-carticon-counter")
+              , c = document.querySelector(".t706__carticon-text");
+            1 == t.total && (e.style.opacity = 0,
+            e.style.transition = "opacity .3s",
+            e.style.opacity = 1)
+        }
+        if (void 0 !== t.products && t.products.length > 0 && t.total > 0 ? (e && e.classList.add("t706__carticon_showed"),
+        a && (a.innerHTML = t.total),
+        o && (o.innerHTML = t.total)) : (e && e.classList.remove("t706__carticon_showed"),
+        a && (a.innerHTML = ""),
+        o && (o.innerHTML = "")),
+        a && ("" === tcart__showPrice(window.tcart.prodamount) ? c.style.display = "none" : (c.style.display = "block",
+        c.innerHTML = "= " + tcart__showPrice(window.tcart.prodamount))),
+        "y" === window.lazy || "yes" === document.querySelector("#allrecords").getAttribute("data-tilda-lazy"))
+            try {
+                tcart__onFuncLoad("t_lazyload_update", (function() {
+                    t_lazyload_update()
+                }
+                ))
+            } catch (t) {
+                console.error("js lazyload not loaded")
+            }
+    }
 })
