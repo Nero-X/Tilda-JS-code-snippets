@@ -11,15 +11,6 @@ let colors = {
     Чёрный: "#2e251c"
 };
 
-function removeEmptyFilterDiv() {
-    if($(".t-store__filter__options").length > 0) return false;
-    else {
-        $(".t951__sidebar")[0].remove();
-        $(".t951__grid-cont")[0].style.maxWidth = "initial";
-        return true;
-    };
-}
-
 function colorFilters(checkboxes) {
     checkboxes.each(function() {
         const color = colors[this.name];
@@ -63,12 +54,13 @@ function waitForElm(selector, timeout = null, parent = document) {
 }
 
 $(function() {
-    waitForElm(".t-store__filter__options", 2000).then((elm) => {
-        if(!removeEmptyFilterDiv(elm)) {
-            let checkboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
-            colorFilters(checkboxes);
-            sortFilters();
-            checkboxes.on("change", sortFilters);
-        };
+    waitForElm(".t-store__filter__options", 2000).then(() => {
+        let checkboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
+        colorFilters(checkboxes);
+        sortFilters();
+        checkboxes.on("change", sortFilters);
+    }).catch(() => {
+        $(".t951__sidebar")[0].remove();
+        $(".t951__grid-cont")[0].style.maxWidth = "initial";
     });
 })
