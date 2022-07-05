@@ -129,7 +129,7 @@ function removeLinksToOrder() {
     });
 }
 
-$(function() {
+$(window).on("load", function() {
     insertDiscountText();
     changeStyles();
     waitForElm(".t-popup .t-store__prod__quantity").then((elm) => {
