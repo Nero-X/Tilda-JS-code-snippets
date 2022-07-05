@@ -129,14 +129,7 @@ function removeLinksToOrder() {
     });
 }
 
-$(window).on("load", function() {
-    insertDiscountText();
-    changeStyles();
-    waitForElm(".t-popup .t-store__prod__quantity").then((elm) => {
-        t_store__prod__quantity_plus_minus_10(elm.parentNode);
-    });
-    removeColorSelect();
-    removeLinksToOrder();
+$(function() {
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
             // изменение списка
@@ -168,6 +161,16 @@ $(window).on("load", function() {
         childList: true,
         subtree: true
     });
+});
+
+$(window).on("load", function() {
+    insertDiscountText();
+    changeStyles();
+    waitForElm(".t-popup .t-store__prod__quantity").then((elm) => {
+        t_store__prod__quantity_plus_minus_10(elm.parentNode);
+    });
+    removeColorSelect();
+    removeLinksToOrder();
 
     // tcart__product__minus_10
     tcart__product__minus = function(t) {
