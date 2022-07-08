@@ -140,8 +140,8 @@ function addFormInputs() {
     discountInput.hidden = true;
     discountInput.classList.add("discounted");
 
-    $("form")[1].append(discountPercentInput);
-    $("form")[1].append(discountInput);
+    $(".t-form__inputsbox")[1].append(discountPercentInput);
+    $(".t-form__inputsbox")[1].append(discountInput);
 }
 
 $(function() {
@@ -187,7 +187,7 @@ $(function() {
     removeColorSelect();
     removeLinksToOrder();
     addFormInputs();
-    
+
     // убрать вторую надпись о минимальном кол-ве в корзине
     waitForElms(".t706__cartwin-totalamount-wrap .t706__cartwin-prodamount-mincntorder").then((elms) => {
         elms[0].remove();
