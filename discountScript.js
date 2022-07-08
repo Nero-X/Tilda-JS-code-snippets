@@ -148,7 +148,9 @@ $(function() {
     let storeObserver = new MutationObserver((changes) => {
         for (let change of changes) {
             // добавление товаров в каталог
-            if (change.target.classList.contains("t951__grid-cont")) {
+            if (change.target.classList.contains("t951__grid-cont") &&
+                change.addedNodes.length > 0 &&
+                change.removedNodes.length == 0) {
                 for (const elem of change.addedNodes) {
                     if (elem.classList.contains("js-product")) t_store__prod__quantity_plus_minus_10(elem);
                 };
