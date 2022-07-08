@@ -52,7 +52,7 @@ function calcSum() {
 function insertDiscountText() {
     let discountText = document.createElement("div");
     discountText.id = "discount-wrap";
-    discountText.innerHTML = "Скидка <span id='discount-percent'>0</span>%: -<span id='discounted'>0</span> р.";
+    discountText.innerHTML = "Скидка <span class='discount-percent'>0</span>%: -<span class='discounted'>0</span> р.";
     let totalSumText = document.createElement("div");
     totalSumText.id = "total-sum-wrap";
     totalSumText.innerHTML = "Итого: <span class='total-sum'></span> р.";
@@ -63,8 +63,8 @@ function setDiscountAndSum() {
     let discount = calcDiscount();
     let sum = tcart.amount;
     let totalSum = sum - sum * discount / 100;
-    $("#discount-percent").text(discount.toCurrencyString());
-    $("#discounted").text((sum - totalSum).toCurrencyString());
+    $(".discount-percent").text(discount.toCurrencyString());
+    $(".discounted").text((sum - totalSum).toCurrencyString());
     $(".total-sum").text(totalSum.toCurrencyString());
     $("button.t-submit").click(function() {
         tcart.amount = totalSum;
@@ -129,6 +129,21 @@ function removeLinksToOrder() {
     });
 }
 
+function addFormInputs() {
+    let discountPercentInput = document.createElement("input");
+    discountPercentInput.name = "Процент скидки";
+    discountPercentInput.hidden = true;
+    discountPercentInput.classList.add("discount-percent");
+
+    let discountInput = document.createElement("input");
+    discountInput.name = "Скидка";
+    discountInput.hidden = true;
+    discountInput.classList.add("discounted");
+
+    $("form")[1].append(discountPercentInput);
+    $("form")[1].append(discountInput);
+}
+
 $(function() {
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
@@ -171,7 +186,8 @@ $(function() {
     });
     removeColorSelect();
     removeLinksToOrder();
-
+    addFormInputs();
+    
     // убрать вторую надпись о минимальном кол-ве в корзине
     waitForElms(".t706__cartwin-totalamount-wrap .t706__cartwin-prodamount-mincntorder").then((elms) => {
         elms[0].remove();
@@ -181,6 +197,8 @@ $(function() {
     waitForElms(".t706__cartwin-totalamount-label").then((elms) => {
         elms[0].innerHTML = "Итого: ";
     });
+
+    
 });
 
 $(window).on("load", function() {
