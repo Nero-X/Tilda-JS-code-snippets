@@ -14,7 +14,7 @@ function changeStyles() {
         color: #8B8B8B
       }
 
-      #total-sum-wrap, .t706__product-title a {
+      #total-sum-wrap, .t706__product-title a, .t706__cartwin-totalamount-wrap {
         font-weight: initial;
         font-size: initial;
         color: #2e251c !important
@@ -55,7 +55,7 @@ function insertDiscountText() {
     discountText.innerHTML = "Скидка <span id='discount-percent'>0</span>%: -<span id='discounted'>0</span> р.";
     let totalSumText = document.createElement("div");
     totalSumText.id = "total-sum-wrap";
-    totalSumText.innerHTML = "Итого: <span id='total-sum'></span> р.";
+    totalSumText.innerHTML = "Итого: <span class='total-sum'></span> р.";
     $(".t706__cartwin-prodamount").first().after(totalSumText).after(discountText);
 }
 
@@ -65,7 +65,7 @@ function setDiscountAndSum() {
     let totalSum = sum - sum * discount / 100;
     $("#discount-percent").text(discount.toCurrencyString());
     $("#discounted").text((sum - totalSum).toCurrencyString());
-    $("#total-sum").text(totalSum.toCurrencyString());
+    $(".total-sum").text(totalSum.toCurrencyString());
     $("button.t-submit").click(function() {
         tcart.amount = totalSum;
         tcart.total = calcTotalQuantity();
@@ -133,8 +133,8 @@ $(function() {
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
             // изменение списка
-            if (change.target.classList.contains("t706__product-quantity") ||
-                change.target.classList.contains("t706__cartwin-products")) {
+            if (change.target.classList.contains("t706__cartwin-totalamount")) {
+                change.addedNodes[0].classList.add("total-sum");
                 setDiscountAndSum();
                 break;
             };
@@ -154,6 +154,7 @@ $(function() {
                 };
                 removeColorSelect();
                 removeLinksToOrder();
+                break;
             };
         };
     });
@@ -161,18 +162,27 @@ $(function() {
         childList: true,
         subtree: true
     });
-});
-
-$(window).on("load", function() {
     insertDiscountText();
     changeStyles();
-    waitForElm(".t-popup .t-store__prod__quantity").then((elm) => {
-        t_store__prod__quantity_plus_minus_10(elm.parentNode);
+    waitForElms(".t-popup .t-store__prod__quantity").then((elms) => {
+        t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
     });
     removeColorSelect();
     removeLinksToOrder();
 
-    // tcart__product__minus_10
+    // убрать вторую надпись о минимальном кол-ве в корзине
+    waitForElms(".t706__cartwin-totalamount-wrap .t706__cartwin-prodamount-mincntorder").then((elms) => {
+        elms[0].remove();
+    });
+
+    // изменить надпись на второй итоговой сумме
+    waitForElms(".t706__cartwin-totalamount-label").then((elms) => {
+        elms[0].innerHTML = "Итого: ";
+    });
+});
+
+$(window).on("load", function() {
+    // уменьшение кол-ва на 10
     tcart__product__minus = function(t) {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
@@ -189,7 +199,7 @@ $(window).on("load", function() {
         tcart__saveLocalObj())
     };
 
-    // tcart__product__plus_10
+    // увеличение кол-ва на 10
     tcart__product__plus = function(t) {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
@@ -237,5 +247,7 @@ $(window).on("load", function() {
             } catch (t) {
                 console.error("js lazyload not loaded")
             }
-    }
+    };
+
+    tcart__reDrawCartIcon();
 })
