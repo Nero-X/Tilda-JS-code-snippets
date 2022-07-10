@@ -19,6 +19,10 @@ function changeStyles() {
         font-size: initial;
         color: #2e251c !important
       }
+
+      .total-sum {
+        vertical-align: initial
+      }
     `;
     document.head.appendChild(style);
 }
@@ -41,14 +45,6 @@ function calcDiscount() {
     return discount;
 }
 
-function calcSum() {
-    let sum = 0;
-    for (let product of tcart.products) {
-        sum += product.quantity * product.price;
-    }
-    return sum;
-}
-
 function insertDiscountText() {
     let discountText = document.createElement("div");
     discountText.id = "discount-wrap";
@@ -60,16 +56,23 @@ function insertDiscountText() {
 }
 
 function setDiscountAndSum() {
-    let discount = calcDiscount();
-    let sum = tcart.amount;
-    let totalSum = sum - sum * discount / 100;
-    $(".discount-percent").text(discount.toCurrencyString());
-    $(".discounted").text((sum - totalSum).toCurrencyString());
-    $(".total-sum").text(totalSum.toCurrencyString());
-    $("button.t-submit").click(function() {
-        tcart.amount = totalSum;
-        tcart.total = calcTotalQuantity();
-    });
+    if (typeof(tcart) !== "undefined") {
+        let discount = calcDiscount();
+        let sum = tcart.amount;
+        let totalSum = sum - sum * discount / 100;
+        let discountStr = discount.toCurrencyString();
+        let discountedStr = (sum - totalSum).toCurrencyString();
+        $(".discount-percent").text(discountStr);
+        $(".discounted").text(discountedStr);
+        $(".total-sum").text(totalSum.toCurrencyString());
+        $("input[name=Скидка]").val(discountStr);
+        $("input[name=Процент_скидки]").val(discountedStr);
+        $("button.t-submit").click(function() {
+            tcart.amount = totalSum;
+            tcart.total = calcTotalQuantity();
+        });
+    }
+    else console.error("tcart is undefined");
 }
 
 function t_store__prod__quantity_plus_minus_10(prodElem) {
@@ -129,21 +132,6 @@ function removeLinksToOrder() {
     });
 }
 
-function addFormInputs() {
-    let discountPercentInput = document.createElement("input");
-    discountPercentInput.name = "Процент скидки";
-    discountPercentInput.hidden = true;
-    discountPercentInput.classList.add("discount-percent");
-
-    let discountInput = document.createElement("input");
-    discountInput.name = "Скидка";
-    discountInput.hidden = true;
-    discountInput.classList.add("discounted");
-
-    $(".t-form__inputsbox")[1].append(discountPercentInput);
-    $(".t-form__inputsbox")[1].append(discountInput);
-}
-
 $(function() {
     let cartObserver = new MutationObserver((changes) => {
         for (const change of changes) {
@@ -186,7 +174,10 @@ $(function() {
     });
     removeColorSelect();
     removeLinksToOrder();
-    addFormInputs();
+
+    // спрятать поля формы
+    $("input[name=Скидка]")[0].parentNode.parentNode.hidden = true;
+    $("input[name=Процент_скидки]")[0].parentNode.parentNode.hidden = true;
 
     // убрать вторую надпись о минимальном кол-ве в корзине
     waitForElms(".t706__cartwin-totalamount-wrap .t706__cartwin-prodamount-mincntorder").then((elms) => {
@@ -197,8 +188,6 @@ $(function() {
     waitForElms(".t706__cartwin-totalamount-label").then((elms) => {
         elms[0].innerHTML = "Итого: ";
     });
-
-    
 });
 
 $(window).on("load", function() {

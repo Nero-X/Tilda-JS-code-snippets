@@ -28,7 +28,7 @@ function sortFilters() {
     });
 }
 
-function waitForElm(selector, timeout = null, parent = document) {
+function waitForElm(selector, token = null, timeout = null, parent = document) {
     return new Promise((resolve, reject) => {
         if (parent.querySelector(selector)) {
             return resolve(parent.querySelector(selector));
@@ -46,21 +46,35 @@ function waitForElm(selector, timeout = null, parent = document) {
             subtree: true
         });
 
-        if(timeout) setTimeout(function() {
-            reject(new Error("Timeout"));
+        if (timeout) setTimeout(function() {
             observer.disconnect();
+            reject(new Error("Timeout"));
         }, timeout);
+
+        if (token) token.cancel = function() {
+            observer.disconnect();
+            reject(new Error("Cancelled"));
+        };
     });
 }
 
-$(window).on("load", function() {
-    waitForElm(".t-store__filter__options", 2000).then(() => {
-        let checkboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
-        colorFilters(checkboxes);
+$(function() {
+    var token = {};
+    waitForElm(".t-store__filter__options", token).then(() => {
+        let colorCheckboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
+        colorFilters(colorCheckboxes);
         sortFilters();
-        checkboxes.on("change", sortFilters);
+
+        // применять сортировку фильтров при каждом изменении
+        $("input.t-checkbox").on("change", sortFilters);
     }).catch(() => {
         $(".t951__sidebar")[0].remove();
         $(".t951__grid-cont")[0].style.maxWidth = "initial";
     });
+});
+
+$(window).on("load", function() {
+    setTimeout(() => {
+        token.cancel();
+    }, 2000);
 })
