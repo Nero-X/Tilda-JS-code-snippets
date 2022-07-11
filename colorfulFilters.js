@@ -58,8 +58,9 @@ function waitForElm(selector, token = null, timeout = null, parent = document) {
     });
 }
 
+var token = {};
+
 $(function() {
-    var token = {};
     waitForElm(".t-store__filter__options", token).then(() => {
         let colorCheckboxes = $(".t-store__filter__checkbox_simple .js-store-filter-opt-chb");
         colorFilters(colorCheckboxes);
