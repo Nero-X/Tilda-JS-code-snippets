@@ -56,23 +56,20 @@ function insertDiscountText() {
 }
 
 function setDiscountAndSum() {
-    if (typeof(tcart) !== "undefined") {
-        let discount = calcDiscount();
-        let sum = tcart.amount;
-        let totalSum = sum - sum * discount / 100;
-        let discountStr = discount.toCurrencyString();
-        let discountedStr = (sum - totalSum).toCurrencyString();
-        $(".discount-percent").text(discountStr);
-        $(".discounted").text(discountedStr);
-        $(".total-sum").text(totalSum.toCurrencyString());
-        $("input[name=Процент_скидки]").val(discountStr);
-        $("input[name=Скидка]").val(discountedStr);
-        $("button.t-submit").click(function() {
-            tcart.amount = totalSum;
-            tcart.total = calcTotalQuantity();
-        });
-    }
-    else console.error("tcart is undefined");
+    let discount = calcDiscount();
+    let sum = tcart.amount;
+    let totalSum = sum - sum * discount / 100;
+    let discountStr = discount.toCurrencyString();
+    let discountedStr = (sum - totalSum).toCurrencyString();
+    $(".discount-percent").text(discountStr);
+    $(".discounted").text(discountedStr);
+    $(".total-sum").text(totalSum.toCurrencyString());
+    $("input[name=Процент_скидки]").val(discountStr);
+    $("input[name=Скидка]").val(discountedStr);
+    $("button.t-submit").click(function() {
+        tcart.amount = totalSum;
+        tcart.total = calcTotalQuantity();
+    });
 }
 
 function t_store__prod__quantity_plus_minus_10(prodElem) {
@@ -258,5 +255,11 @@ $(window).on("load", function() {
             }
     };
 
-    tcart__reDrawCartIcon();
+    let cartIconInterval = setInterval(() => {
+        console.log("123");
+        if (typeof(tcart) !== "undefined") {
+            clearInterval(cartIconInterval);
+            tcart__reDrawCartIcon();
+        }
+    }, 500);
 })
