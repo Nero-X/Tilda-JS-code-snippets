@@ -256,7 +256,6 @@ $(window).on("load", function() {
     };
 
     let cartIconInterval = setInterval(() => {
-        console.log("123");
         if (typeof(tcart) !== "undefined") {
             clearInterval(cartIconInterval);
             tcart__reDrawCartIcon();
