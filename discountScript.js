@@ -167,13 +167,16 @@ $(function() {
             childList: true,
             subtree: true
         });
+        waitForElms(".t-popup .t-store__prod__quantity").then((elms) => {
+            t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
+        });
     }
+    else waitForElms(".t-store__prod__quantity").then((elms) => {
+        t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
+    });
     
     insertDiscountText();
     changeStyles();
-    waitForElms(".t-popup .t-store__prod__quantity").then((elms) => {
-        t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
-    });
     removeColorSelect();
     removeLinksToOrder();
 
