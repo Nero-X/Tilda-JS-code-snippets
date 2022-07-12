@@ -145,25 +145,30 @@ $(function() {
         characterData: true,
         subtree: true
     });
-    let storeObserver = new MutationObserver((changes) => {
-        for (let change of changes) {
-            // добавление товаров в каталог
-            if (change.target.classList.contains("t951__grid-cont") &&
-                change.addedNodes.length > 0 &&
-                change.removedNodes.length == 0) {
-                for (const elem of change.addedNodes) {
-                    if (elem.classList.contains("js-product")) t_store__prod__quantity_plus_minus_10(elem);
+
+    let store = $(".t951")[0];
+    if (store) {
+        let storeObserver = new MutationObserver((changes) => {
+            for (let change of changes) {
+                // добавление товаров в каталог
+                if (change.target.classList.contains("t951__grid-cont") &&
+                    change.addedNodes.length > 0 &&
+                    change.removedNodes.length == 0) {
+                    for (const elem of change.addedNodes) {
+                        if (elem.classList.contains("js-product")) t_store__prod__quantity_plus_minus_10(elem);
+                    };
+                    removeColorSelect();
+                    removeLinksToOrder();
+                    break;
                 };
-                removeColorSelect();
-                removeLinksToOrder();
-                break;
             };
-        };
-    });
-    storeObserver.observe($(".t951")[0], {
-        childList: true,
-        subtree: true
-    });
+        });
+        storeObserver.observe(store, {
+            childList: true,
+            subtree: true
+        });
+    }
+    
     insertDiscountText();
     changeStyles();
     waitForElms(".t-popup .t-store__prod__quantity").then((elms) => {
@@ -260,5 +265,5 @@ $(window).on("load", function() {
             clearInterval(cartIconInterval);
             tcart__reDrawCartIcon();
         }
-    }, 500);
+    }, 200);
 })

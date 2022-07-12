@@ -69,8 +69,8 @@ $(function() {
         // применять сортировку фильтров при каждом изменении
         $("input.t-checkbox").on("change", sortFilters);
     }).catch(() => {
-        $(".t951__sidebar")[0].remove();
-        $(".t951__grid-cont")[0].style.maxWidth = "initial";
+        $(".t951__sidebar").remove();
+        $(".t951__grid-cont").css("maxWidth", "initial");
     });
 });
 
