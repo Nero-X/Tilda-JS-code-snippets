@@ -64,8 +64,8 @@ function setDiscountAndSum() {
     $(".discount-percent").text(discountStr);
     $(".discounted").text(discountedStr);
     $(".total-sum").text(totalSum.toCurrencyString());
-    $("input[name=Процент_скидки]").val(discountStr);
-    $("input[name=Скидка]").val(discountedStr);
+    $("input[name=Процент_скидки]").val(discountStr + " %");
+    $("input[name=Скидка]").val(discountedStr + " р.");
     $("button.t-submit").click(function() {
         tcart.amount = totalSum;
         tcart.total = calcTotalQuantity();
