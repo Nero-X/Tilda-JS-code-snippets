@@ -167,10 +167,14 @@ $(function() {
             childList: true,
             subtree: true
         });
+
+        // popup
         waitForElms(".t-popup .t-store__prod__quantity").then((elms) => {
             t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
         });
     }
+
+    // карточка товара
     else waitForElms(".t-store__prod__quantity").then((elms) => {
         t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
     });
