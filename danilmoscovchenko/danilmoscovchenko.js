@@ -1,6 +1,10 @@
 $(function() {
-    let animStyle = document.createElement("style");
-    animStyle.innerHTML = `
+    let style = document.createElement("style");
+    style.innerHTML = `
+    .t228 {
+        backdrop-filter: blur(2px);
+    }
+    
     .flash-animation {
         position: relative;
         overflow: hidden;
@@ -44,13 +48,13 @@ $(function() {
         animation-iteration-count: infinite;
     }
     `;
-    document.head.appendChild(animStyle);
+    document.head.appendChild(style);
 
     $("div[data-elem-type=button].t396__elem").each(function() {
         this.classList.add("flash-animation");
         this.insertAdjacentHTML("beforeend", '<div class="flash-animation-wrap"><div class="flash-animation-effect"></div></div>');
         $("div.t396__elem[data-elem-type=button] .tn-atom, button.t-submit").css({
-            "background": "linear-gradient(90deg, rgb(254,220,123) 0%, rgb(176,131,69) 100%)"
+            "background": "linear-gradient(90deg, rgb(254,220,123), rgb(176,131,69))"
         });
     });
 })
