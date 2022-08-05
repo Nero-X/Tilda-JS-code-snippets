@@ -50,11 +50,9 @@ $(function() {
     `;
     document.head.appendChild(style);
 
-    $("div[data-elem-type=button].t396__elem").each(function() {
-        this.classList.add("flash-animation");
-        this.insertAdjacentHTML("beforeend", '<div class="flash-animation-wrap"><div class="flash-animation-effect"></div></div>');
-        $("div.t396__elem[data-elem-type=button] .tn-atom, button.t-submit").css({
-            "background": "linear-gradient(90deg, rgb(254,220,123), rgb(176,131,69))"
-        });
+    $("div[data-elem-type=button].t396__elem").addClass("flash-animation");
+    $("div[data-elem-type=button].t396__elem .tn-atom").append('<div class="flash-animation-wrap"><div class="flash-animation-effect"></div></div>');
+    $("div.t396__elem[data-elem-type=button] .tn-atom, button.t-submit").css({
+        "background": "linear-gradient(90deg, rgb(254,220,123), rgb(176,131,69))"
     });
 })
