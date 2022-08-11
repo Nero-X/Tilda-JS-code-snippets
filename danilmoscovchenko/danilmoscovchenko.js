@@ -4,13 +4,6 @@ $(function() {
     .t228 {
         backdrop-filter: blur(2px);
     }
-    
-    .flash-animation {
-        position: relative;
-        overflow: hidden;
-        -webkit-transform: translate3d(0,0,0);
-        transform: translate3d(0,0,0);
-    }
 
     .flash-animation-effect {
         background: -webkit-gradient(linear, left top, right top, from(rgba(255, 255, 255, .1)), to(rgba(255, 255, 255, .4)));
@@ -50,9 +43,10 @@ $(function() {
     `;
     document.head.appendChild(style);
 
-    $("div[data-elem-type=button].t396__elem").addClass("flash-animation");
     $("div[data-elem-type=button].t396__elem .tn-atom").append('<div class="flash-animation-wrap"><div class="flash-animation-effect"></div></div>');
     $("div.t396__elem[data-elem-type=button] .tn-atom, button.t-submit").css({
-        "background": "linear-gradient(90deg, rgb(254,220,123), rgb(176,131,69))"
+        "background": "linear-gradient(90deg, rgb(254,220,123), rgb(176,131,69))",
+        "position": "relative",
+        "overflow": "hidden"
     });
 })
