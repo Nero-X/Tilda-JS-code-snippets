@@ -40,6 +40,14 @@ $(function() {
         -webkit-animation-iteration-count: infinite;
         animation-iteration-count: infinite;
     }
+
+    .scale-animation {
+        transition: transform 200ms
+    }
+
+    .scale-animation:hover {
+        transform: scale(1.08) !important
+    }
     `;
     document.head.appendChild(style);
 
@@ -49,4 +57,5 @@ $(function() {
         "position": "relative",
         "overflow": "hidden"
     });
+    $("button.t-submit").addClass("scale-animation");
 })
