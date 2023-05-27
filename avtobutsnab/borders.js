@@ -10,5 +10,5 @@ $(function(){
     `;
     document.head.appendChild(style);
 
-    $(".t859__inner-col, .t1014__wrapper, .t651__wrapper, .t214__blockimg, .t774__wrapper").addClass("blue-border");
+    $(".t859__inner-col, .t-popup__container, .t651__wrapper, .t214__blockimg, .t774__wrapper").addClass("blue-border");
 })
