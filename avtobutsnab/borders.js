@@ -4,7 +4,7 @@ $(function(){
     .blue-border {
         border-width: 3px;
         border-radius: 2px;
-        border-color: #2428b6;
+        border-color: #212370;
         border-style: solid;
     }
     `;
