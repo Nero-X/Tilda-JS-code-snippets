@@ -70,6 +70,7 @@ $(function() {
     document.head.appendChild(style);
 
     waitForElm("#rec771087890 .js-product-img").then((elm) => {
+        alert("dwdgw");
         elm.outerHTML = html;
     });
 })
