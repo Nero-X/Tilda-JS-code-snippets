@@ -34,10 +34,42 @@ let html = `
 </div>
 `
 
+function waitForElm(selector, token = null, timeout = null, parent = document) {
+    return new Promise((resolve, reject) => {
+        if (parent.querySelector(selector)) {
+            return resolve(parent.querySelector(selector));
+        }
+
+        const observer = new MutationObserver(mutations => {
+            if (parent.querySelector(selector)) {
+                resolve(parent.querySelector(selector));
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(parent, {
+            childList: true,
+            subtree: true
+        });
+
+        if (timeout) setTimeout(function() {
+            observer.disconnect();
+            reject(new Error("Timeout"));
+        }, timeout);
+
+        if (token) token.cancel = function() {
+            observer.disconnect();
+            reject(new Error("Cancelled"));
+        };
+    });
+}
+
 $(function() {
     let style = document.createElement("style");
     style.innerHTML = css;
     document.head.appendChild(style);
 
-    $('#rec771087890 .js-product-img').outerHTML = html;
+    waitForElm("#rec771087890 .js-product-img").then((elm) => {
+        elm.outerHTML = html;
+    });
 })
