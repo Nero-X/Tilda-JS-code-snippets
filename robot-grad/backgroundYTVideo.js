@@ -65,6 +65,7 @@ function waitForElm(selector, token = null, timeout = null, parent = document) {
 }
 
 $(function() {
+    alert("dwdgw");
     let style = document.createElement("style");
     style.innerHTML = css;
     document.head.appendChild(style);
