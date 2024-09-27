@@ -18,18 +18,19 @@ $(function() {
     document.head.appendChild(style);
 
     let verBtns = $(".t396 .t396__elem[class*=ver]");
-    let buyBtn = $(".t1093 .t396__elem[data-elem-type=button]").first();
+    let buyBtns = $(".t1093 .v-order");
 
     verBtns.on("click", function() {
         verBtns.removeClass("ver-selected");
         $(this).addClass("ver-selected");
     });
 
-    buyBtn.on("click", function() {
+    buyBtns.on("click", function() {
+        let popup = $(this).closest(".t1093");
         let product = {
-            name: $(".t1093 .t396__elem.name").text(),
+            name: popup.find(".t396__elem.name").text(),
             url: "https://yantardolina.ru/oil",
-            img: $(".t1093 .t396__elem.v-img1 img").attr('src'),
+            img: popup.find(".t396__elem.v-img1 img").attr('src'),
             options: [{
                 option: "Объём",
                 price: 0,
