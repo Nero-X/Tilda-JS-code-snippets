@@ -32,20 +32,28 @@ function waitForElms(selector, parent = document) {
     });
 }
 
+function waitUntil(conditionFunc, timeout) {
+    const poll = resolve => {
+        if(conditionFunc()) resolve();
+        else setTimeout(_ => poll(resolve), timeout);
+    }
+    
+    return new Promise(poll);
+}
+
 $(function() {
     let style = document.createElement("style");
     style.innerHTML = css;
     document.head.appendChild(style);
 
-    waitForElms(".t396 .t396__elem[class*=ver]").then(function(verBtns) {
-        $(verBtns).on("click", function() {
-            $(verBtns).removeClass("ver-selected");
+    waitUntil(() => typeof t396_isBlockVisible === "function" && t396_isBlockVisible($("#rec801295923")[0]), 500).then(function() {
+        let verBtns = $(".t396 .t396__elem[class*=ver]");
+        verBtns.on("click", function() {
+            verBtns.removeClass("ver-selected");
             $(this).addClass("ver-selected");
         });
-    })
 
-    waitForElms(".t1093 .v-order").then(function(buyBtns) {
-        $(buyBtns).on("click", function() {
+        $(".t1093 .v-order").on("click", function() {
             let popup = $(this).closest(".t1093");
             let product = {
                 name: popup.find(".t396__elem.name").text(),
