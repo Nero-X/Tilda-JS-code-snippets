@@ -45,7 +45,7 @@ $(function() {
     })
 
     waitForElms(".t1093 .v-order").then(function(buyBtns) {
-        buyBtns.on("click", function() {
+        $(buyBtns).on("click", function() {
             let popup = $(this).closest(".t1093");
             let product = {
                 name: popup.find(".t396__elem.name").text(),
