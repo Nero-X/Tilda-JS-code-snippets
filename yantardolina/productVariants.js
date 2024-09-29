@@ -39,7 +39,7 @@ $(function() {
 
     waitForElms(".t396 .t396__elem[class*=ver]").then(function(verBtns) {
         $(verBtns).on("click", function() {
-            verBtns.removeClass("ver-selected");
+            $(verBtns).removeClass("ver-selected");
             $(this).addClass("ver-selected");
         });
     })
@@ -54,7 +54,7 @@ $(function() {
                 options: [{
                     option: "Объём",
                     price: 0,
-                    variant: verBtns.filter(".ver-selected").text()
+                    variant: popup.find(".ver-selected").text()
                 }],
                 //uid: generateGUID(10),
                 price: ""
