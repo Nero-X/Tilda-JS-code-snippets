@@ -49,6 +49,10 @@ $(function() {
     let lang = location.pathname.startsWith('/eng') ? "eng" : "ru";
     let nextBlockId = lang == "eng" ? "#rec804637228" : "#rec801295923";
 
+    waitUntil(() => typeof t_cart__browserLang === "string").then(function() {
+        t_cart__browserLang = lang.toUpperCase().slice(0, 2);
+    })
+
     waitUntil(() => typeof t396_isBlockVisible === "function" && t396_isBlockVisible($(nextBlockId)[0]), 500).then(function() {
         let verBtns = $(".t396 .t396__elem[class*=ver]");
         verBtns.on("click", function() {
