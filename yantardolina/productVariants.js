@@ -46,21 +46,25 @@ $(function() {
     style.innerHTML = css;
     document.head.appendChild(style);
 
-    waitUntil(() => typeof t396_isBlockVisible === "function" && t396_isBlockVisible($("#rec801295923")[0]), 500).then(function() {
+    let lang = location.pathname.startsWith('/eng') ? "eng" : "ru";
+    let nextBlockId = lang == "eng" ? "#rec804637228" : "#rec801295923";
+
+    waitUntil(() => typeof t396_isBlockVisible === "function" && t396_isBlockVisible($(nextBlockId)[0]), 500).then(function() {
         let verBtns = $(".t396 .t396__elem[class*=ver]");
         verBtns.on("click", function() {
             verBtns.removeClass("ver-selected");
             $(this).addClass("ver-selected");
         });
 
-        $(".t1093 .v-order").on("click", function() {
+        $(".t1093 .v-order").on("click", function(event) {
+            event.preventDefault();
             let popup = $(this).closest(".t1093");
             let product = {
                 name: popup.find(".t396__elem.name").text(),
-                url: "https://yantardolina.ru/oil",
+                url: location.href,
                 img: popup.find(".t396__elem.v-img1 img").attr('src'),
                 options: [{
-                    option: "Объём",
+                    option: lang == "ru" ? "Объём" : "Volume",
                     price: 0,
                     variant: popup.find(".ver-selected").text()
                 }],
