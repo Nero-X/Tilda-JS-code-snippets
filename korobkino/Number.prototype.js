@@ -7,23 +7,23 @@ Number.prototype.toCurrencyString = function() {
 
 function changeStyles() {
     let style = document.createElement("style");
-    style.innerHTML = `
+    style.innerHTML = 
       .t706__cartwin-prodamount-wrap {
         font-weight: initial;
-        font-size: 14px;
+        font-size: 15px;
         color: #8B8B8B
       }
 
       #total-sum-wrap, .t706__product-title a, .t706__cartwin-totalamount-wrap {
         font-weight: initial;
-        font-size: initial;
+        font-size: 19px;
         color: #2e251c !important
       }
 
       .total-sum {
         vertical-align: initial
       }
-    `;
+    ;
     document.head.appendChild(style);
 }
 
@@ -38,10 +38,10 @@ function calcTotalQuantity() {
 function calcDiscount() {
     let totalQuantity = calcTotalQuantity();
     let discount =
-        totalQuantity >= 20 && totalQuantity < 60 ? 10 :
-        totalQuantity >= 60 && totalQuantity < 110 ? 12 :
-        totalQuantity >= 110 && totalQuantity < 310 ? 15 :
-        totalQuantity >= 310 ? 20 : 0;
+        totalQuantity >= 20 && totalQuantity < 110 ? 5 :
+        totalQuantity >= 110 && totalQuantity < 310 ? 10 :
+        totalQuantity >= 310 && totalQuantity < 1000 ? 15 :
+        totalQuantity >= 1000 ? 20 : 0;
     return discount;
 }
 
@@ -72,12 +72,12 @@ function setDiscountAndSum() {
     });
 }
 
-function t_store__prod__quantity_plus_minus_10(prodElem) {
-    var e = $(prodElem).find(".t-store__prod__quantity");
+function t_sprodod__quantity_plus_minus_10(prodElem) {
+    var e = $(prodElem).find(".t-sprodod__quantity");
     if (e) {
-        let input = $(prodElem).find(".t-store__prod__quantity-input")[0];
-        let minus = $(prodElem).find(".t-store__prod__quantity__minus-wrapper")[0];
-        let plus = $(prodElem).find(".t-store__prod__quantity__plus-wrapper")[0];
+        let input = $(prodElem).find(".t-sprodod__quantity-input")[0];
+        let minus = $(prodElem).find(".t-sprodod__quantity__minus-wrapper")[0];
+        let plus = $(prodElem).find(".t-sprodod__quantity__plus-wrapper")[0];
         let button = $(prodElem).find(".js-store-prod-btn")[0];
         input.value = 10;
         minus.addEventListener("click", function() {
@@ -93,36 +93,6 @@ function t_store__prod__quantity_plus_minus_10(prodElem) {
             input.value = Math.max(10, input.value);
         });
     };
-}
-
-function waitForElm(selector, token = null, timeout = null, parent = document) {
-    return new Promise((resolve, reject) => {
-        if (parent.querySelector(selector)) {
-            return resolve(parent.querySelector(selector));
-        }
-
-        const observer = new MutationObserver(mutations => {
-            if (parent.querySelector(selector)) {
-                resolve(parent.querySelector(selector));
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(parent, {
-            childList: true,
-            subtree: true
-        });
-
-        if (timeout) setTimeout(function() {
-            observer.disconnect();
-            reject(new Error("Timeout"));
-        }, timeout);
-
-        if (token) token.cancel = function() {
-            observer.disconnect();
-            reject(new Error("Cancelled"));
-        };
-    });
 }
 
 function waitForElms(selector, parent = document) {
@@ -150,7 +120,6 @@ function removeColorSelect() {
         $(elms).remove();
     });
 }
-
 function removeLinksToOrder() {
     waitForElms("a[href='#order']:not([class])").then((elms) => {
         $(elms).each(function() {
@@ -176,41 +145,34 @@ $(function() {
         subtree: true
     });
 
-    waitForElm(".t951", timeout=2000).then((store) => {
-        if (store) {
-            let storeObserver = new MutationObserver((changes) => {
-                for (let change of changes) {
-                    // добавление товаров в каталог
-                    if (change.target.classList.contains("t951__grid-cont") &&
-                        change.addedNodes.length > 0 &&
-                        change.removedNodes.length == 0) {
-                            const elements = change.addedNodes[0].children;
-                            for (let i = 0; i < elements.length; i++) {
-                                const elem = elements[i];
-                                if (elem.classList.contains("js-product")) t_store__prod__quantity_plus_minus_10(elem);
-                            }
-                            removeColorSelect();
-                            removeLinksToOrder();
-                            break;
+    let store = $(".t951")[0];
+    if (store) {
+        let storeObserver = new MutationObserver((changes) => {
+            for (let change of changes) {
+                // добавление товаров в каталог
+                if (change.target.classList.contains("t951__grid-cont") &&
+                    change.addedNodes.length > 0 &&
+                    change.removedNodes.length == 0) {
+                    for (const elem of change.addedNodes) {
+                        if (elem.classList.contains("js-product")) t_storeprodquantity_plus_minus_10(elem);
                     };
+                    removeColorSelect();
+                    removeLinksToOrder();
+                    break;
                 };
-            });
-            storeObserver.observe(store, {
-                childList: true,
-                subtree: true
-            });
-    
-            // popup
-            waitForElms(".t-popup .t-store__prod__quantity").then((elms) => {
-                t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
-            });
-        }
-    }, () => {
-        // карточка товара
-        waitForElms(".t-store__prod__quantity").then((elms) => {
-            t_store__prod__quantity_plus_minus_10(elms[0].parentNode);
+            };
         });
-    })
+        storeObserver.observe(store, {
+            childList: true,
+            subtree: true
+        });
+        waitForElms(".t-popup .t-storeprodquantity").then((elms) => {
+            t_storeprodquantity_plus_minus_10(elms[0].parentNode);
+        });
+    }
+    else waitForElms(".t-storeprodquantity").then((elms) => {
+        t_storeprodquantity_plus_minus_10(elms[0].parentNode);
+    });
     
     insertDiscountText();
     changeStyles();
@@ -222,7 +184,7 @@ $(function() {
     $("input[name=Процент_скидки]")[0].parentNode.parentNode.hidden = true;
 
     // убрать вторую надпись о минимальном кол-ве в корзине
-    waitForElms(".t706__cartwin-totalamount-wrap .t706__cartwin-prodamount-mincntorder").then((elms) => {
+    waitForElms(".t706cartwin-totalamount-wrap .t706cartwin-prodamount-mincntorder").then((elms) => {
         elms[0].remove();
     });
 
@@ -234,33 +196,32 @@ $(function() {
 
 $(window).on("load", function() {
     // уменьшение кол-ва на 10
-    tcart__product__minus = function(t) {
+    tcartproductminus = function(t) {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
-        !window.tcart.products[r] && (tcart__syncProductsObject__LStoObj(),
+        !window.tcart.products[r] && (tcartsyncProductsObjectLStoObj(),
         null == window.tcart.products[r]) || (0 < window.tcart.products[r].quantity && (window.tcart.products[r].quantity -= 10), // -10
         window.tcart.products[r].amount = tcart__roundPrice(window.tcart.products[r].price * window.tcart.products[r].quantity),
-        0 < window.tcart.products[r].amount && (e.querySelector(".t706__product-amount").innerHTML = tcart__showPrice(window.tcart.products[r].amount)),
-        0 < window.tcart.products[r].amount && "y" === window.tcart.products[r].single && void 0 !== window.tcart.products[r].portion && (e.querySelector(".t706__product-portion").innerHTML = tcart__showWeight(window.tcart.products[r].quantity * window.tcart.products[r].portion, window.tcart.products[r].unit)),
+        0 < window.tcart.products[r].amount && (e.querySelector(".t706product-amount").innerHTML = tcartshowPrice(window.tcart.products[r].amount)),
+        0 < window.tcart.products[r].amount && "y" === window.tcart.products[r].single && void 0 !== window.tcart.products[r].portion && (e.querySelector(".t706product-portion").innerHTML = tcartshowWeight(window.tcart.products[r].quantity * window.tcart.products[r].portion, window.tcart.products[r].unit)),
         e.querySelector(".t706__product-quantity").innerHTML = window.tcart.products[r].quantity,
-        0 >= window.tcart.products[r].quantity && tcart__product__del(t),
+        0 >= window.tcart.products[r].quantity && tcartproductdel(t),
         tcart__updateTotalProductsinCartObj(),
         tcart__reDrawCartIcon(),
         tcart__reDrawTotal(),
         tcart__saveLocalObj())
     };
-
-    // увеличение кол-ва на 10
-    tcart__product__plus = function(t) {
+// увеличение кол-ва на 10
+    tcartproductplus = function(t) {
         var e = t.closest(".t706__product")
           , r = e.getAttribute("data-cart-product-i");
-        (window.tcart.products[r] || (tcart__syncProductsObject__LStoObj(),
+        (window.tcart.products[r] || (tcartsyncProductsObjectLStoObj(),
         null != window.tcart.products[r])) && (window.tcart.products[r].quantity > 0 && void 0 !== window.tcart.products[r].inv && window.tcart.products[r].inv > 0 && window.tcart.products[r].inv == window.tcart.products[r].quantity ? alert(tcart_dict("limitReached")) : (window.tcart.products[r].quantity += 10, // +10
         window.tcart.products[r].amount = window.tcart.products[r].price * window.tcart.products[r].quantity,
         window.tcart.products[r].amount = tcart__roundPrice(window.tcart.products[r].amount),
         e.querySelector(".t706__product-quantity").innerHTML = window.tcart.products[r].quantity,
-        "y" === window.tcart.products[r].single && void 0 !== window.tcart.products[r].portion && (e.querySelector(".t706__product-portion").innerHTML = tcart__showWeight(window.tcart.products[r].quantity * window.tcart.products[r].portion, window.tcart.products[r].unit)),
-        window.tcart.products[r].amount > 0 ? e.querySelector(".t706__product-amount").innerHTML = tcart__showPrice(window.tcart.products[r].amount) : e.querySelector(".t706__product-amount").innerHTML = "",
+        "y" === window.tcart.products[r].single && void 0 !== window.tcart.products[r].portion && (e.querySelector(".t706product-portion").innerHTML = tcartshowWeight(window.tcart.products[r].quantity * window.tcart.products[r].portion, window.tcart.products[r].unit)),
+        window.tcart.products[r].amount > 0 ? e.querySelector(".t706product-amount").innerHTML = tcartshowPrice(window.tcart.products[r].amount) : e.querySelector(".t706__product-amount").innerHTML = "",
         tcart__updateTotalProductsinCartObj(),
         tcart__reDrawCartIcon(),
         tcart__reDrawTotal(),
